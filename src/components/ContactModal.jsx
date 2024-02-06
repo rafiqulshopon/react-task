@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal, Spinner, Button, Form, Table } from 'react-bootstrap';
 
 const ContactModal = ({
@@ -10,15 +9,22 @@ const ContactModal = ({
   onCheckboxChange,
   onlyEven,
   onContactClick,
+  switchContacts,
 }) => {
+  const handleSwitchContacts = (usOnly) => {
+    switchContacts(usOnly);
+    const newUrl = usOnly ? '#USContacts' : '#AllContacts';
+    window.history.pushState({}, '', newUrl);
+  };
+
   return (
     <Modal centered show={show} onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title>{isUS ? 'US Contacts' : 'All Contacts'}</Modal.Title>
       </Modal.Header>
       <Modal.Body
-        className={`d-flex ${
-          loading ? 'justify-content-center align-items-center' : ''
+        className={`${
+          loading ? 'd-flex justify-content-center align-items-center' : ''
         }`}
         style={{ overflowY: 'auto' }}
       >
@@ -57,7 +63,23 @@ const ContactModal = ({
           onChange={onCheckboxChange}
           className='me-auto'
         />
-        <Button variant='secondary' onClick={onHide}>
+        <Button
+          style={{ backgroundColor: '#46139f', color: '#fff' }}
+          onClick={() => handleSwitchContacts(false)}
+        >
+          All Contacts
+        </Button>
+        <Button
+          style={{ backgroundColor: '#ff7f50', color: '#fff' }}
+          onClick={() => handleSwitchContacts(true)}
+        >
+          US Contacts
+        </Button>
+        <Button
+          variant='outline-primary'
+          style={{ borderColor: '#46139f', color: '#46139f' }}
+          onClick={onHide}
+        >
           Close
         </Button>
       </Modal.Footer>

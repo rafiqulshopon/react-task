@@ -65,6 +65,11 @@ const Problem2 = () => {
     setShowDetailModal(false);
   };
 
+  const switchContacts = (usOnly) => {
+    setIsUS(usOnly);
+    fetchContacts(usOnly ? 'united states' : '');
+  };
+
   useEffect(() => {
     fetchContacts(isUS);
   }, [onlyEven, isUS]);
@@ -97,6 +102,7 @@ const Problem2 = () => {
         onCheckboxChange={toggleEvenFilter}
         onlyEven={onlyEven}
         onContactClick={handleShowDetailModal}
+        switchContacts={switchContacts}
       />
 
       <ContactDetailModal
