@@ -1,15 +1,17 @@
-import { Modal, Spinner } from 'react-bootstrap';
+import React from 'react';
+import { Modal, Spinner, Button, Form, Table } from 'react-bootstrap';
 
 const ContactModal = ({
   show,
   onHide,
   contacts,
-  onScrollToEnd,
   isUS,
   loading,
+  onCheckboxChange,
+  onlyEven,
 }) => {
   return (
-    <Modal show={show} onHide={onHide} onScroll={onScrollToEnd}>
+    <Modal centered show={show} onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title>{isUS ? 'US Contacts' : 'All Contacts'}</Modal.Title>
       </Modal.Header>
@@ -17,14 +19,12 @@ const ContactModal = ({
         className={`d-flex ${
           loading ? 'justify-content-center align-items-center' : ''
         }`}
-        style={{ maxHeight: '400px', overflowY: 'auto' }}
+        style={{ overflowY: 'auto' }}
       >
         {loading ? (
-          <div>
-            <Spinner animation='border' />
-          </div>
+          <Spinner animation='border' />
         ) : (
-          <table className='table'>
+          <Table striped bordered hover>
             <thead>
               <tr>
                 <th>ID</th>
@@ -37,13 +37,25 @@ const ContactModal = ({
                 <tr key={contact.id}>
                   <td>{contact.id}</td>
                   <td>{contact.phone}</td>
-                  <td>{contact.country.name}</td>
+                  <td>{contact.country ? contact.country.name : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
       </Modal.Body>
+      <Modal.Footer>
+        <Form.Check
+          type='checkbox'
+          label='Only even'
+          checked={onlyEven}
+          onChange={onCheckboxChange}
+          className='me-auto'
+        />
+        <Button variant='secondary' onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };
