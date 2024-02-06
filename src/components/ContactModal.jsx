@@ -13,9 +13,14 @@ const ContactModal = ({
       <Modal.Header closeButton>
         <Modal.Title>{isUS ? 'US Contacts' : 'All Contacts'}</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <Modal.Body
+        className={`d-flex ${
+          loading ? 'justify-content-center align-items-center' : ''
+        }`}
+        style={{ maxHeight: '400px', overflowY: 'auto' }}
+      >
         {loading ? (
-          <div className='d-flex justify-content-center'>
+          <div>
             <Spinner animation='border' />
           </div>
         ) : (

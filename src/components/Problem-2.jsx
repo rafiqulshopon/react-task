@@ -34,6 +34,7 @@ const Problem2 = () => {
 
   const handleHideModal = () => {
     setShowModal(false);
+    setContacts([]);
   };
 
   const handleScrollToEnd = () => {};
