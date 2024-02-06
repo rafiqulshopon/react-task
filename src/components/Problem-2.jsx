@@ -14,30 +14,41 @@ const Problem2 = () => {
   const [onlyEven, setOnlyEven] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState({});
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchContacts = useCallback(
-    async (country = '') => {
-      setLoading(true);
+    async (country = '', newPage = 1) => {
+      if (!hasMore) return;
+
       try {
-        const url = country
-          ? `${apiBaseURL}country-contacts/united%20states/`
-          : `${apiBaseURL}contacts/`;
+        const url = `${apiBaseURL}${
+          country ? `country-contacts/united%20states/` : `contacts/`
+        }?page=${newPage}`;
         const { data } = await axios.get(url);
-        setContacts(
-          onlyEven
-            ? data.results.filter((c) => c.id % 2 === 0)
-            : data.results || []
-        );
+
+        if (onlyEven) {
+          setContacts((prevContacts) => [
+            ...prevContacts,
+            ...data.results.filter((c) => c.id % 2 === 0),
+          ]);
+        } else {
+          setContacts((prevContacts) => [...prevContacts, ...data.results]);
+        }
+
+        setHasMore(data.next != null);
+        setPage(newPage + 1);
       } catch (error) {
         console.error('Error fetching contacts:', error);
       } finally {
         setLoading(false);
       }
     },
-    [onlyEven]
+    [onlyEven, hasMore]
   );
 
   const handleShowModal = (us) => {
+    setLoading(true);
     setIsUS(us);
     fetchContacts(us);
     setShowModal(true);
@@ -48,6 +59,7 @@ const Problem2 = () => {
   const handleHideModal = () => {
     setShowModal(false);
     setContacts([]);
+    setLoading(true);
     window.history.pushState({}, '', window.location.pathname);
   };
 
@@ -103,6 +115,8 @@ const Problem2 = () => {
         onlyEven={onlyEven}
         onContactClick={handleShowDetailModal}
         switchContacts={switchContacts}
+        fetchMoreData={() => fetchContacts(isUS ? 'united states' : '', page)}
+        hasMore={hasMore}
       />
 
       <ContactDetailModal

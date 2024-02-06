@@ -1,3 +1,4 @@
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Modal, Spinner, Button, Form, Table } from 'react-bootstrap';
 
 const ContactModal = ({
@@ -10,6 +11,8 @@ const ContactModal = ({
   onlyEven,
   onContactClick,
   switchContacts,
+  fetchMoreData,
+  hasMore,
 }) => {
   const handleSwitchContacts = (usOnly) => {
     switchContacts(usOnly);
@@ -18,7 +21,7 @@ const ContactModal = ({
   };
 
   return (
-    <Modal centered show={show} onHide={onHide}>
+    <Modal centered show={show} onHide={onHide} size='xl'>
       <Modal.Header closeButton>
         <Modal.Title>{isUS ? 'US Contacts' : 'All Contacts'}</Modal.Title>
       </Modal.Header>
@@ -26,33 +29,45 @@ const ContactModal = ({
         className={`${
           loading ? 'd-flex justify-content-center align-items-center' : ''
         }`}
-        style={{ overflowY: 'auto' }}
       >
         {loading ? (
           <Spinner animation='border' />
         ) : (
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Phone</th>
-                <th>Country</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contacts.map((contact) => (
-                <tr
-                  key={contact.id}
-                  onClick={() => onContactClick(contact)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>{contact.id}</td>
-                  <td>{contact.phone}</td>
-                  <td>{contact.country ? contact.country.name : 'N/A'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <div
+            id='scrollable-modal-div'
+            style={{ height: '400px', overflow: 'auto' }}
+          >
+            <InfiniteScroll
+              dataLength={contacts.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={<Spinner animation='border' />}
+              scrollableTarget='scrollable-modal-div'
+            >
+              <Table striped bordered hover style={{ overflowY: 'hidden' }}>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contacts.map((contact) => (
+                    <tr
+                      key={contact.id}
+                      onClick={() => onContactClick(contact)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>{contact.id}</td>
+                      <td>{contact.phone}</td>
+                      <td>{contact.country ? contact.country.name : 'N/A'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </InfiniteScroll>
+          </div>
         )}
       </Modal.Body>
       <Modal.Footer>
