@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import ContactModal from './ContactModal';
+import ContactDetailModal from './ContactDetailModal';
 
 const apiBaseURL = 'https://contact.mediusware.com/api/';
 
@@ -11,6 +12,8 @@ const Problem2 = () => {
   const [isUS, setIsUS] = useState(false);
   const [loading, setLoading] = useState(false);
   const [onlyEven, setOnlyEven] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState({});
 
   const fetchContacts = useCallback(
     async (country = '') => {
@@ -52,6 +55,16 @@ const Problem2 = () => {
     setOnlyEven(!onlyEven);
   };
 
+  const handleShowDetailModal = (contact) => {
+    setSelectedContact(contact);
+    setShowDetailModal(true);
+  };
+
+  const handleHideDetailModal = () => {
+    setSelectedContact({});
+    setShowDetailModal(false);
+  };
+
   useEffect(() => {
     fetchContacts(isUS);
   }, [onlyEven, isUS]);
@@ -83,6 +96,13 @@ const Problem2 = () => {
         loading={loading}
         onCheckboxChange={toggleEvenFilter}
         onlyEven={onlyEven}
+        onContactClick={handleShowDetailModal}
+      />
+
+      <ContactDetailModal
+        show={showDetailModal}
+        onHide={handleHideDetailModal}
+        contact={selectedContact}
       />
     </div>
   );

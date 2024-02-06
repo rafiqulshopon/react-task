@@ -9,6 +9,7 @@ const ContactModal = ({
   loading,
   onCheckboxChange,
   onlyEven,
+  onContactClick,
 }) => {
   return (
     <Modal centered show={show} onHide={onHide}>
@@ -34,7 +35,11 @@ const ContactModal = ({
             </thead>
             <tbody>
               {contacts.map((contact) => (
-                <tr key={contact.id}>
+                <tr
+                  key={contact.id}
+                  onClick={() => onContactClick(contact)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>{contact.id}</td>
                   <td>{contact.phone}</td>
                   <td>{contact.country ? contact.country.name : 'N/A'}</td>
